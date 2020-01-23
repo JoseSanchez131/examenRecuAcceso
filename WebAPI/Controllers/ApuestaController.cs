@@ -15,7 +15,7 @@ namespace WebAPI.Controllers
         //EJERCICIO1:
         //Devolvemos los valores introducimos en ApuestaExamen.
 
-        // GET: api/ApuestaExamen/
+        // GET: api/Apuesta
         public IEnumerable <ApuestaExamen> Get()
         {
             var repo = new ApuestaRepository();
@@ -26,11 +26,11 @@ namespace WebAPI.Controllers
 
         // GET: api/Apuesta?cuota=cuota1&cuota=cuota2
         
-        public IEnumerable<ApuestaDTO1> GetCuota(double cuota, double cuotamax)
+        public IEnumerable<ApuestaDTO1> GetCuota(string email_fk, double cuotamax)
         {
             var repo = new ApuestaRepository();
 
-            List<ApuestaDTO1> apuesta = repo.RetrieveCuota (cuota, cuotamax);
+            List<ApuestaDTO1> apuesta = repo.RetrieveCuota (email_fk, cuotamax);
 
             return apuesta;
         }

@@ -20,45 +20,14 @@ namespace WebAPI.Models
             return con;
         }
 
-        internal List<Apuesta> Retrieve()
-        {
-
-            MySqlConnection con = Connect();
-            MySqlCommand command = con.CreateCommand();
-            command.CommandText = "select * from apuesta";
-
-            try
-            {
-                con.Open();
-                MySqlDataReader res = command.ExecuteReader();
-
-                Apuesta a = null;
-                List<Apuesta> apuesta = new List<Apuesta>();
-                while (res.Read())
-                {
-
-                    Debug.WriteLine("Recuperado: " + res.GetInt32(0) + " " + res.GetInt32(1) + " " + res.GetString(2) + " " + res.GetInt32(3) + " " + res.GetDouble(4) + " " + res.GetInt32(5));
-
-                    a = new Apuesta(res.GetInt32(0), res.GetInt32(1), res.GetString(2), res.GetInt32(3), res.GetDouble(4), res.GetInt32(5));
-                }
-
-                con.Close();
-                return apuesta;
-            }
-
-            catch (MySqlException e)
-            {
-                Debug.WriteLine("Se ha producido un error de conexion");
-                return null;
-            }
-        }
+      
 
         internal List<ApuestaExamen> RetrieveExamen()
         {
 
             MySqlConnection con = Connect();
             MySqlCommand command = con.CreateCommand();
-            command.CommandText = "select email_fk,  DineroApostado , IdMercado, cuota from apuesta";
+            command.CommandText = "select email_fk , id_mercado_fk, cuota, dinero_apostado from apuesta";
 
             try
             {
@@ -70,9 +39,9 @@ namespace WebAPI.Models
                 while (res.Read())
                 {
 
-                    Debug.WriteLine("Recuperado: " + res.GetString(0) + " " + res.GetInt32(1) + " " + res.GetInt32(2) + " " + res.GetDouble(3));
+                    Debug.WriteLine("Recuperado: " + res.GetString(0) + " " + res.GetInt32(1) + " " + res.GetDouble(2) + " " + res.GetDouble(3));
 
-                    a = new ApuestaExamen(res.GetString(0), res.GetInt32(1), res.GetInt32(2), res.GetDouble(3));
+                    a = new ApuestaExamen(res.GetString(0), res.GetInt32(1), res.GetDouble(2), res.GetDouble(3));
                 }
 
 
@@ -105,7 +74,7 @@ namespace WebAPI.Models
 
             MySqlConnection con = Connect();
             MySqlCommand command = con.CreateCommand();
-            command.CommandText = "insert into apuesta(id_apuesta,email_fk,id_mercado_fk, tipo_apuesta, cuota, dinero_apostado) values ('" + a.IdApuesta + "','" + a.EmailFk + "' ,'" + a.IdMercado + "' ,'" + a.TipoApuesta + "' ,'" + a.Cuota + "' ,'" + a.DineroApostado + "');";
+            command.CommandText = "insert into apuesta(id_apuesta,email_fk,id_mercado_fk, tipo_apuesta, cuota, dinero_apostado) values ('" + a.IdApuesta + "','" + a.EmailFk + "' ,'" + a.IdMercado + "' ,'" + a.TipoApuesta + "' ,'"  + a.DineroApostado + "');";
             Debug.WriteLine("comando " + command.CommandText);
 
 
@@ -242,13 +211,13 @@ namespace WebAPI.Models
 
         }
 
-        internal List<ApuestaDTO1> RetrieveCuota(double cuota, double cuotamax)
+        internal List<ApuestaDTO1> RetrieveCuota(string email_fk, double cuotamax)
         {
 
             MySqlConnection con = Connect();
             MySqlCommand command = con.CreateCommand();
-            command.CommandText = "select id_apuesta ,id_mercado_FK ,tipo_apuesta, cuota, dinero_apostado from apuesta where cuota > @A and cuota < @A2 ";
-            command.Parameters.AddWithValue("@A", cuota);
+            command.CommandText = "select email_fk, id_apuesta ,id_mercado_FK ,tipo_apuesta, cuota, dinero_apostado from apuesta where email_fk = @A and cuota > @A2 ";
+            command.Parameters.AddWithValue("@A", email_fk);
             command.Parameters.AddWithValue("@A2", cuotamax);
 
 
@@ -263,9 +232,9 @@ namespace WebAPI.Models
                 while (res.Read())
                 {
 
-                    Debug.WriteLine("Recuperado: " + res.GetInt32(0) + " " + res.GetInt32(1) + " " + res.GetInt32(2) + " " + res.GetDouble(3) + " " + res.GetInt32(4));
+                    Debug.WriteLine("Recuperado: " + res.GetString(0) + " " + res.GetInt32(1) + " " + res.GetInt32(2) + " " + res.GetInt32(3) + " " + res.GetDouble(4) + " " + res.GetInt32(5));
 
-                    m = new ApuestaDTO1(res.GetInt32(0), res.GetInt32(1), res.GetInt32(2), res.GetDouble(3), res.GetInt32(4));
+                    m = new ApuestaDTO1(res.GetString(0), res.GetInt32(1), res.GetInt32(2), res.GetInt32(3), res.GetDouble(4), res.GetInt32(5));
 
 
                     apuesta.Add(m);
@@ -328,7 +297,9 @@ namespace WebAPI.Models
 
 
 
-
+        /*
+         
+         */
     }
 }
 
